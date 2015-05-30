@@ -9,7 +9,6 @@ namespace TicTacToe
 		public GameLayer ()
 		{
 			// Load and instantate your assets here
-			Board theBoard = new Board();
 
 			// Make any renderable node objects (e.g. sprites) children of this layer
 		}
@@ -20,6 +19,12 @@ namespace TicTacToe
 
 			// Use the bounds to layout the positioning of our drawable assets
 			CCRect bounds = VisibleBoundsWorldspace;
+
+			Board theBoard = new Board(this,3);
+
+			AddChild (theBoard);
+
+			theBoard.DrawLines ();
 
 			// Register for touch events
 			var touchListener = new CCEventListenerTouchAllAtOnce ();
