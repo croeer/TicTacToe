@@ -9,12 +9,12 @@ namespace TicTacToe
 	{
 		public enum State
 		{
-			player1,
-			player2
+			Player1,
+			Player2
 		};
 
 		int _size;
-		public State GameState { get; set; }
+		public State? GameState { get; set; }
 
 		State?[,] _boardState = new State? [3, 3];
 
@@ -24,7 +24,7 @@ namespace TicTacToe
 		{
 			Gameover = false;
 			_size = size;
-			GameState = State.player1;
+			GameState = State.Player1;
 		}
 
 		public void DrawLines ()
@@ -67,7 +67,7 @@ namespace TicTacToe
 
 		public void SwitchState ()
 		{
-			GameState = (GameState == State.player1) ? State.player2 : State.player1;
+			GameState = (GameState == State.Player1) ? State.Player2 : State.Player1;
 		}
 
 		public void HandleTouch (CCPoint location)
@@ -85,13 +85,18 @@ namespace TicTacToe
 			if (CheckForWin ()) {
 				DrawWinningLine ();
 				Gameover = true;
+				return;
 			}
 
 			SwitchState ();
 		}
 
 		void DrawWinningLine() {
+			if (!GameState.HasValue) {
+				return;
+			}
 
+			// Draw
 		}
 
 		bool CheckForWin ()
@@ -129,12 +134,18 @@ namespace TicTacToe
 				}
 			}
 
+			// every field occupied? remis
+			if (!_boardState.Cast<State?> ().Any (t => !t.HasValue)) {
+				GameState = null;
+				return true;
+			}
+
 			return false;
 		}
 
 		void DrawCurrentMove (CCPoint location)
 		{
-			var filename = (GameState == State.player1) ? "icon-x.png" : "icon-o.png";
+			var filename = (GameState == State.Player1) ? "icon-x.png" : "icon-o.png";
 			var symbol = new CCSprite (filename);
 			symbol.AnchorPoint = CCPoint.AnchorMiddle;
 			symbol.Scale = 5f;

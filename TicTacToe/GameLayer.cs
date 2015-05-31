@@ -47,7 +47,7 @@ namespace TicTacToe
 			// Stop scheduled events as we transition to game over scene
 			UnscheduleAll();
 
-			var gameOverScene = GameOverLayer.SceneWithScore (Window,5);
+			var gameOverScene = GameOverLayer.SceneWithWinner (Window,_board.GameState);
 			var transitionToGameOver = new CCTransitionMoveInR (0.3f, gameOverScene);
 
 			Director.ReplaceScene (transitionToGameOver);

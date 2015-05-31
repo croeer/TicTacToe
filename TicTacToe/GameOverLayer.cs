@@ -9,7 +9,7 @@ namespace TicTacToe
 
 		string scoreMessage = string.Empty;
 
-		public GameOverLayer (int score)
+		public GameOverLayer (Board.State? winner)
 		{
 
 			var touchListener = new CCEventListenerTouchAllAtOnce ();
@@ -17,7 +17,11 @@ namespace TicTacToe
 
 			AddEventListener (touchListener, this);
 
-			scoreMessage = String.Format ("Game Over. You collected {0} bananas!", score);
+			if (!winner.HasValue) {
+				scoreMessage = "Game Over, but it ended Remis.";
+			} else {
+				scoreMessage = String.Format ("Game Over. {0} has won!", winner.Value.ToString());
+			}
 
 			Color = new CCColor3B (CCColor4B.Black);
 
@@ -30,7 +34,7 @@ namespace TicTacToe
 
 			Scene.SceneResolutionPolicy = CCSceneResolutionPolicy.ShowAll;
 
-			var scoreLabel = new CCLabel (scoreMessage, "arial", 22) {
+			var scoreLabel = new CCLabel (scoreMessage, "arial", 50) {
 				Position = new CCPoint (VisibleBoundsWorldspace.Size.Center.X, VisibleBoundsWorldspace.Size.Center.Y + 50),
 				Color = new CCColor3B (CCColor4B.Yellow),
 				HorizontalAlignment = CCTextAlignment.Center,
@@ -40,7 +44,7 @@ namespace TicTacToe
 
 			AddChild (scoreLabel);
 
-			var playAgainLabel = new CCLabel("Tap to Play Again", "arial", 22) {
+			var playAgainLabel = new CCLabel("Tap to Play Again", "arial", 50) {
 				Position = VisibleBoundsWorldspace.Size.Center,
 				Color = new CCColor3B (CCColor4B.Green),
 				HorizontalAlignment = CCTextAlignment.Center,
@@ -52,10 +56,10 @@ namespace TicTacToe
 
 		}
 
-		public static CCScene SceneWithScore (CCWindow mainWindow, int score)
+		public static CCScene SceneWithWinner (CCWindow mainWindow, Board.State? winner)
 		{
 			var scene = new CCScene (mainWindow);
-			var layer = new GameOverLayer (score);
+			var layer = new GameOverLayer (winner);
 
 			scene.AddChild (layer);
 
