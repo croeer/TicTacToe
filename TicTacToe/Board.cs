@@ -18,6 +18,7 @@ namespace TicTacToe
 
 		public void DrawLines() {
 			addHorizontalLines ();
+			addVerticalLines ();
 		}
 
 		void addHorizontalLines() {
@@ -31,10 +32,32 @@ namespace TicTacToe
 					y.Offset(VisibleBoundsWorldspace.MaxX,0),
 					5f,
 					new CCColor4F (255f, 0f, 0f, 1f)); 
-			//l.DrawSegment (p1, p2, 10.0f, new CCColor4F(255.0f, 0.0f,0.0f,1.0f));
 			}
 			AddChild (l);
 
+		}
+
+		void addVerticalLines() {
+			var l = new CCDrawNode ();
+
+			for (int x=1; x<_size; ++x)
+			{
+				var y = VisibleBoundsWorldspace.LowerLeft.Offset(
+					VisibleBoundsWorldspace.MaxX / _size * x, 0);
+				l.DrawSegment (y,
+					y.Offset(0,VisibleBoundsWorldspace.MaxY),
+					5f,
+					new CCColor4F (255f, 0f, 0f, 1f)); 
+			}
+			AddChild (l);
+
+		}
+
+		public void HandleTouch(CCPoint location) {
+			var symbol = new CCSprite ("icon-x.png");
+			symbol.Position = location;
+
+			AddChild (symbol);
 		}
 
 	}

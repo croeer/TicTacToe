@@ -111,5 +111,7 @@
   <ItemGroup>
     <BundleResource Include="Content\images\ld\icon-x.png" />
     <BundleResource Include="Content\images\ld\icon-o.png" />
+    <BundleResource Include="Content\images\hd\icon-o.png" />
+    <BundleResource Include="Content\images\hd\icon-x.png" />
   </ItemGroup>
 </Project>
