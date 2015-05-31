@@ -6,14 +6,17 @@ namespace TicTacToe
 {
 	public class Board : CCLayerColor
 	{
-		GameLayer _layer;
+		enum State {player1, player2};
+
 		int _size;
+		State _state;
 
-		public Board(GameLayer layer, int size) : base()
+		State?[,] _gameState = new State? [3, 3]; 
+
+		public Board(int size) : base()
 		{
-			_layer = layer;
 			_size = size;
-
+			_state = State.player1;
 		}
 
 		public void DrawLines() {
@@ -53,14 +56,53 @@ namespace TicTacToe
 
 		}
 
+		public void SwitchState() {
+			_state = (_state == State.player1) ? State.player2 : State.player1;
+		}
+
 		public void HandleTouch(CCPoint location) {
-			var symbol = new CCSprite ("icon-x.png");
+
+			var clickedCell = clickedPosition (location);
+			if (!isValidCell (clickedCell)) {
+				return;
+			}
+
+			_gameState [clickedCell.Item1, clickedCell.Item2] = _state;
+
+			DrawCurrentMove (cellToLocation(clickedCell));
+
+			CheckForWin ();
+
+			SwitchState ();
+		}
+
+		void CheckForWin() {
+			// TODO
+		}
+
+		void DrawCurrentMove (CCPoint location)
+		{
+			var filename = (_state == State.player1) ? "icon-x.png" : "icon-o.png";
+			var symbol = new CCSprite (filename);
 			symbol.AnchorPoint = CCPoint.AnchorMiddle;
 			symbol.Scale = 5f;
 			symbol.Position = location;
-
 			AddChild (symbol);
+		}
 
+		CCPoint cellToLocation(Tuple<int,int> cell) {
+			return new CCPoint (100f, 100f).Offset(cell.Item1*200f, cell.Item2*200f);
+		}
+
+		private Tuple<int,int> clickedPosition(CCPoint location) {
+			int x = (int) (location.X / 200f);
+			int y = (int) (location.Y / 200f);
+
+			return new Tuple<int,int> (x, y);
+		}
+
+		private bool isValidCell(Tuple<int,int> cell) {
+			return ! _gameState [cell.Item1, cell.Item2].HasValue;
 		}
 
 	}

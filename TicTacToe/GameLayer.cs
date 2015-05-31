@@ -22,7 +22,7 @@ namespace TicTacToe
 			// Use the bounds to layout the positioning of our drawable assets
 			CCRect bounds = VisibleBoundsWorldspace;
 
-			_board = new Board(this,3);
+			_board = new Board(3);
 
 			AddChild (_board);
 
