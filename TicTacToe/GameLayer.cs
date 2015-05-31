@@ -55,6 +55,9 @@ namespace TicTacToe
 
 		void OnTouchesEnded (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (_board.Gameover)
+				return;
+			
 			if (touches.Count > 0) {
 				var location = touches [0].Location;
 				CCLog.Log ("Touched: {0},{1}", location.X, location.Y);

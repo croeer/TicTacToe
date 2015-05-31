@@ -7,35 +7,41 @@ namespace TicTacToe
 {
 	public class Board : CCLayerColor
 	{
-		enum State {player1, player2};
+		public enum State
+		{
+			player1,
+			player2
+		};
 
 		int _size;
-		State _state;
+		public State GameState { get; set; }
 
-		State?[,] _gameState = new State? [3, 3]; 
+		State?[,] _boardState = new State? [3, 3];
 
 		public bool Gameover { get; set; }
 
-		public Board(int size) : base()
+		public Board (int size) : base ()
 		{
+			Gameover = false;
 			_size = size;
-			_state = State.player1;
+			GameState = State.player1;
 		}
 
-		public void DrawLines() {
+		public void DrawLines ()
+		{
 			addHorizontalLines ();
 			addVerticalLines ();
 		}
 
-		void addHorizontalLines() {
+		void addHorizontalLines ()
+		{
 			var l = new CCDrawNode ();
 
-			for (int x=1; x<_size; ++x)
-			{
-				var y = VisibleBoundsWorldspace.LowerLeft.Offset(
-					0 ,VisibleBoundsWorldspace.MaxY / _size * x);
+			for (int x = 1; x < _size; ++x) {
+				var y = VisibleBoundsWorldspace.LowerLeft.Offset (
+					        0, VisibleBoundsWorldspace.MaxY / _size * x);
 				l.DrawSegment (y,
-					y.Offset(VisibleBoundsWorldspace.MaxX,0),
+					y.Offset (VisibleBoundsWorldspace.MaxX, 0),
 					5f,
 					new CCColor4F (255f, 0f, 0f, 1f)); 
 			}
@@ -43,15 +49,15 @@ namespace TicTacToe
 
 		}
 
-		void addVerticalLines() {
+		void addVerticalLines ()
+		{
 			var l = new CCDrawNode ();
 
-			for (int x=1; x<_size; ++x)
-			{
-				var y = VisibleBoundsWorldspace.LowerLeft.Offset(
-					VisibleBoundsWorldspace.MaxX / _size * x, 0);
+			for (int x = 1; x < _size; ++x) {
+				var y = VisibleBoundsWorldspace.LowerLeft.Offset (
+					        VisibleBoundsWorldspace.MaxX / _size * x, 0);
 				l.DrawSegment (y,
-					y.Offset(0,VisibleBoundsWorldspace.MaxY),
+					y.Offset (0, VisibleBoundsWorldspace.MaxY),
 					5f,
 					new CCColor4F (255f, 0f, 0f, 1f)); 
 			}
@@ -59,33 +65,76 @@ namespace TicTacToe
 
 		}
 
-		public void SwitchState() {
-			_state = (_state == State.player1) ? State.player2 : State.player1;
+		public void SwitchState ()
+		{
+			GameState = (GameState == State.player1) ? State.player2 : State.player1;
 		}
 
-		public void HandleTouch(CCPoint location) {
+		public void HandleTouch (CCPoint location)
+		{
 
 			var clickedCell = clickedPosition (location);
 			if (!isValidCell (clickedCell)) {
 				return;
 			}
 
-			_gameState [clickedCell.Item1, clickedCell.Item2] = _state;
+			_boardState [clickedCell.Item1, clickedCell.Item2] = GameState;
 
-			DrawCurrentMove (cellToLocation(clickedCell));
+			DrawCurrentMove (cellToLocation (clickedCell));
 
-			CheckForWin ();
+			if (CheckForWin ()) {
+				DrawWinningLine ();
+				Gameover = true;
+			}
 
 			SwitchState ();
 		}
 
-		void CheckForWin() {
-			Gameover = true;
+		void DrawWinningLine() {
+
+		}
+
+		bool CheckForWin ()
+		{
+			for (int y = 0; y < 3; ++y) {
+				if ((_boardState [0,y] == _boardState [1,y]) &&
+					(_boardState [1,y] == _boardState [2,y])) {
+					if (_boardState [0,y].HasValue) {
+						return true;
+					}
+				}
+			}
+
+			for (int x = 0; x < 3; ++x) {
+				if ((_boardState [x,0] == _boardState [x,1]) &&
+				     (_boardState [x,0] == _boardState [x,2])) {
+					if (_boardState [x,0].HasValue) {
+						return true;
+					}
+				}
+			}
+
+			// check diagonals
+			if ((_boardState [0, 0] == _boardState [1, 1]) &&
+			    (_boardState [0, 0] == _boardState [2, 2])) {
+				if (_boardState [0,0].HasValue) {
+					return true;
+				}
+			}
+
+			if ((_boardState [0, 2] == _boardState [1, 1]) &&
+				(_boardState [0, 2] == _boardState [2, 0])) {
+				if (_boardState [0,2].HasValue) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		void DrawCurrentMove (CCPoint location)
 		{
-			var filename = (_state == State.player1) ? "icon-x.png" : "icon-o.png";
+			var filename = (GameState == State.player1) ? "icon-x.png" : "icon-o.png";
 			var symbol = new CCSprite (filename);
 			symbol.AnchorPoint = CCPoint.AnchorMiddle;
 			symbol.Scale = 5f;
@@ -93,19 +142,22 @@ namespace TicTacToe
 			AddChild (symbol);
 		}
 
-		CCPoint cellToLocation(Tuple<int,int> cell) {
-			return new CCPoint (100f, 100f).Offset(cell.Item1*200f, cell.Item2*200f);
+		CCPoint cellToLocation (Tuple<int,int> cell)
+		{
+			return new CCPoint (100f, 100f).Offset (cell.Item1 * 200f, cell.Item2 * 200f);
 		}
 
-		private Tuple<int,int> clickedPosition(CCPoint location) {
-			int x = (int) (location.X / 200f);
-			int y = (int) (location.Y / 200f);
+		private Tuple<int,int> clickedPosition (CCPoint location)
+		{
+			int x = (int)(location.X / 200f);
+			int y = (int)(location.Y / 200f);
 
 			return new Tuple<int,int> (x, y);
 		}
 
-		private bool isValidCell(Tuple<int,int> cell) {
-			return ! _gameState [cell.Item1, cell.Item2].HasValue;
+		private bool isValidCell (Tuple<int,int> cell)
+		{
+			return !_boardState [cell.Item1, cell.Item2].HasValue;
 		}
 
 	}
