@@ -55,9 +55,12 @@ namespace TicTacToe
 
 		public void HandleTouch(CCPoint location) {
 			var symbol = new CCSprite ("icon-x.png");
+			symbol.AnchorPoint = CCPoint.AnchorMiddle;
+			symbol.Scale = 5f;
 			symbol.Position = location;
 
 			AddChild (symbol);
+
 		}
 
 	}
