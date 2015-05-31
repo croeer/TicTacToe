@@ -33,13 +33,8 @@ namespace TicTacToe
 				application.ContentSearchPaths.Add ("images/ld");
 				CCSprite.DefaultTexelToContentSizeRatio = 1.0f;
 			}
-            
-			CCScene scene = new CCScene (mainWindow);
-			GameLayer gameLayer = new GameLayer ();
-
-			scene.AddChild (gameLayer);
-
-			mainWindow.RunWithScene (scene);
+		
+			mainWindow.RunWithScene (GameLayer.GameScene(mainWindow));
 		}
 
 		public override void ApplicationDidEnterBackground (CCApplication application)
