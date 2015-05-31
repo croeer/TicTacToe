@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CocosSharp;
+using System.Linq;
 
 namespace TicTacToe
 {
@@ -12,6 +13,8 @@ namespace TicTacToe
 		State _state;
 
 		State?[,] _gameState = new State? [3, 3]; 
+
+		public bool Gameover { get; set; }
 
 		public Board(int size) : base()
 		{
@@ -77,7 +80,7 @@ namespace TicTacToe
 		}
 
 		void CheckForWin() {
-			// TODO
+			Gameover = true;
 		}
 
 		void DrawCurrentMove (CCPoint location)

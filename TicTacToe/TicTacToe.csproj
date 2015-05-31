@@ -106,6 +106,7 @@
     <Compile Include="GameAppDelegate.cs" />
     <Compile Include="GameLayer.cs" />
     <Compile Include="Board.cs" />
+    <Compile Include="GameOverLayer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>

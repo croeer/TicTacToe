@@ -32,6 +32,25 @@ namespace TicTacToe
 			var touchListener = new CCEventListenerTouchAllAtOnce ();
 			touchListener.OnTouchesEnded = OnTouchesEnded;
 			AddEventListener (touchListener, this);
+
+			Schedule (t => {
+				
+				if (_board.Gameover) {
+					EndGame ();
+				}
+
+			}, 1.0f);
+		}
+
+		void EndGame ()
+		{
+			// Stop scheduled events as we transition to game over scene
+			UnscheduleAll();
+
+			var gameOverScene = GameOverLayer.SceneWithScore (Window,5);
+			var transitionToGameOver = new CCTransitionMoveInR (0.3f, gameOverScene);
+
+			Director.ReplaceScene (transitionToGameOver);
 		}
 
 		void OnTouchesEnded (List<CCTouch> touches, CCEvent touchEvent)
@@ -41,6 +60,16 @@ namespace TicTacToe
 				CCLog.Log ("Touched: {0},{1}", location.X, location.Y);
 				_board.HandleTouch (location);
 			}
+		}
+
+		public static CCScene GameScene (CCWindow mainWindow)
+		{
+			var scene = new CCScene (mainWindow);
+			var layer = new GameLayer ();
+
+			scene.AddChild (layer);
+
+			return scene;
 		}
 	}
 }
