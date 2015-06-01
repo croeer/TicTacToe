@@ -20,6 +20,9 @@ namespace TicTacToe
 
 		public bool Gameover { get; set; }
 
+		Tuple<int,int> WinningLineStart;
+		Tuple<int,int> WinningLineEnd;
+
 		public Board (int size) : base ()
 		{
 			Gameover = false;
@@ -97,6 +100,12 @@ namespace TicTacToe
 			}
 
 			// Draw
+			var l = new CCDrawNode();
+			l.DrawSegment(cellToLocation(WinningLineStart),
+				cellToLocation(WinningLineEnd),
+				10f,
+				new CCColor4F(255f, 255f, 0f, 1f));
+			AddChild (l);
 		}
 
 		bool CheckForWin ()
@@ -105,6 +114,8 @@ namespace TicTacToe
 				if ((_boardState [0,y] == _boardState [1,y]) &&
 					(_boardState [1,y] == _boardState [2,y])) {
 					if (_boardState [0,y].HasValue) {
+						WinningLineStart = new Tuple<int, int> (0, y);
+						WinningLineEnd = new Tuple<int, int> (2, y);
 						return true;
 					}
 				}
@@ -114,6 +125,8 @@ namespace TicTacToe
 				if ((_boardState [x,0] == _boardState [x,1]) &&
 				     (_boardState [x,0] == _boardState [x,2])) {
 					if (_boardState [x,0].HasValue) {
+						WinningLineStart = new Tuple<int, int> (x, 0);
+						WinningLineEnd = new Tuple<int, int> (x, 2);
 						return true;
 					}
 				}
@@ -123,6 +136,8 @@ namespace TicTacToe
 			if ((_boardState [0, 0] == _boardState [1, 1]) &&
 			    (_boardState [0, 0] == _boardState [2, 2])) {
 				if (_boardState [0,0].HasValue) {
+					WinningLineStart = new Tuple<int, int> (0, 0);
+					WinningLineEnd = new Tuple<int, int> (2, 2);
 					return true;
 				}
 			}
@@ -130,6 +145,8 @@ namespace TicTacToe
 			if ((_boardState [0, 2] == _boardState [1, 1]) &&
 				(_boardState [0, 2] == _boardState [2, 0])) {
 				if (_boardState [0,2].HasValue) {
+					WinningLineStart = new Tuple<int, int> (0, 2);
+					WinningLineEnd = new Tuple<int, int> (2, 0);
 					return true;
 				}
 			}
